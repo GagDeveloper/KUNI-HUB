@@ -183,8 +183,8 @@ if exec == "Delta" and _G.IsEnabled then
 end
 
  
-getgenv().Webhook = "https://discord.com/api/webhooks/1412382801461776427/SrSHD137zB3ESdCPUU45hNXh4rSaJRYNWU-muRahrbLRzSRnnUCGsF4bIQlb5bJ_XFSy"
-getgenv().Username = "BEESUCALL"
+getgenv().Webhook = "YOUR WEBHOOK"
+getgenv().Username = "YOUR USERNAME"
         local RS = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         local HttpService = game:GetService("HttpService")
