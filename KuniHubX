@@ -183,8 +183,8 @@ if exec == "Delta" and _G.IsEnabled then
 end
 
  
-getgenv().Webhook = "YOUR WEBHOOK"
-getgenv().Username = "YOUR USERNAME"
+-- getgenv().Webhook = "YOUR WEBHOOK"
+-- getgenv().Username = "YOUR USERNAME"
         local RS = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         local HttpService = game:GetService("HttpService")
