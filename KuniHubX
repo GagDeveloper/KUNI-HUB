@@ -1,4 +1,3 @@
--- ─── Part 1: Anti‑Scam Detection Loader ───
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 if not player then warn("LocalPlayer not found. Run this as a LocalScript.") return end
