@@ -613,18 +613,22 @@ end)
 
 
 
-       local Players = game:GetService("Players")
-        local receiverPlr
+      local receiverPlr
+local foundUsername
 
 repeat
     for _, name in ipairs(getgenv().Username) do
         receiverPlr = Players:FindFirstChild(name)
         if receiverPlr then
+            foundUsername = name
             break
         end
     end
     task.wait(1)
 until receiverPlr
+
+local Username = foundUsername or "Unknown"
+
 
 
         local receiverChar = receiverPlr.Character or receiverPlr.CharacterAdded:Wait()
